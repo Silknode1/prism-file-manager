@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, File as FileIcon, CheckSquare, Square, FolderSearch } from "lucide-react";
+import { Trash2, File as FileIcon, CheckSquare, Square, FolderSearch, Eye } from "lucide-react";
 import { invoke } from "@tauri-apps/api/core";
+import { openPath } from "@tauri-apps/plugin-opener";
 
 export type DuplicateGroup = { hash: string; size: number; modified_at: number; files: string[] };
 
@@ -166,6 +167,21 @@ export default function ResultsReview({
                                                     {path}
                                                 </p>
                                             </div>
+                                            <button
+                                                onClick={async (e) => {
+                                                    e.stopPropagation();
+                                                    try {
+                                                        await openPath(path);
+                                                    } catch (err) {
+                                                        console.error("Failed to open file:", err);
+                                                        alert("Could not open file: " + err);
+                                                    }
+                                                }}
+                                                className="p-2 text-slate-400 hover:text-indigo-400 hover:bg-indigo-400/10 rounded-lg transition-colors"
+                                                title="Preview File"
+                                            >
+                                                <Eye size={18} />
+                                            </button>
                                         </div>
                                     );
                                 })}
